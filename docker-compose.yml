@@ -1,0 +1,14 @@
+version: '3'
+services:
+  springboot-rabbitmq-producer:
+    container_name: springboot-rabbitmq-producer
+    image: shubham6626/springboot-rabbitmq-producer #hub.docker.com or build image(Dockerfile)
+    ports:
+     - 8088:8088
+    volumes:
+      - /home/shubham/postgresql/data:/var/lib/postgresql/data #storage path
+    environment:
+      - SPRING_RABBITMQ_HOST=host.docker.internal
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=admin
+      - SPRING_RABBITMQ_PASSWORD=admin

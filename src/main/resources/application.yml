@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: springboot-rabbitmq-producer
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}  # Hostname
+    port: 5672
+    username: ${SPRING_RABBITMQ_USERNAME:admin}
+    password: ${SPRING_RABBITMQ_PASSWORD:admin}
+  devtools:
+    restart:
+      enabled: true  
+server:
+  port: 8088    
+rabbitmq:
+  exchange: exchange_test
+  test:
+    queue: queue_test
+    routingkey: routing_key_test
+  test2:
+    queue: queue_test2
+    routingkey: routing_key_test2
+  json:
+    exchange: exchange_json
+    queue: json
+    routingkey: json.#
+    email-queue: email
+    email-routingkey: json.email.#
+    
