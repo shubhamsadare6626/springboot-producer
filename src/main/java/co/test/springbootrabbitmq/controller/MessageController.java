@@ -18,7 +18,7 @@ public class MessageController {
 	
 	public MessageController(MessageProducer messageProducer) {
 		this.messageProducer = messageProducer;
-	}
+	} 
 
 	/**
 	 * Produce message.
