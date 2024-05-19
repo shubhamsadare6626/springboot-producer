@@ -11,18 +11,19 @@ Project contains two submodules:
 - Java Development Kit (JDK) 8 or later
 - Docker
 
-# Run the following command to build and run the application:
+# Run the following command to build the application:
 - mvn clean install -DskipTests
 
+## Run the following command to start the application:
 - mvn spring-boot:run
 
 # Start a RabbitMQ instance using Docker:
-
+Run the following command to start a RabbitMQ instance using Docker:
 - docker run -d -it -p 15672:15672 -p 5672:5672 --name rabbitmq-local -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=admin rabbitmq:3-management
 
 ## Configuration
 
-The Spring Boot application can be configured by modifying the application.yml file in the src/main/resources directory.
+The Spring Boot application can be configured by modifying the `application.yml` file in the `src/main/resources` directory.
 
 - spring.application.name: The name of the Spring Boot application.
 - spring.rabbitmq.host: The hostname of the RabbitMQ server.
@@ -32,4 +33,17 @@ The Spring Boot application can be configured by modifying the application.yml f
 
 ## Usage
 
-Once the application is running, it will automatically consume messages from the configured RabbitMQ server. The application will listen for messages on the sample.queue queue.
+Once the application is running, it will automatically consume messages from the configured RabbitMQ server. The application will listen for messages on the `sample.queue` queue.
+
+To send a message to the sample.queue queue, you can use the following code snippet:
+
+```java
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+
+@Autowired
+private RabbitTemplate rabbitTemplate;
+
+public void sendMessage(String message) {
+    rabbitTemplate.convertAndSend("sample.queue", message);
+}
+```
