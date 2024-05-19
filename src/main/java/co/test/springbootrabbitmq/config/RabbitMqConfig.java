@@ -12,7 +12,6 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -24,52 +23,39 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableScheduling
+@RequiredArgsConstructor
 public class RabbitMqConfig {
 
+	private final SystemConfig systemConfig;
+	
 	@Bean
 	public Queue testQueue() {
-		return new Queue(queue);
+		return new Queue(systemConfig.getQueue());
 	}
-	
-	@Value("${rabbitmq.test.queue}")
-	private String queue;
-
-	@Value("${rabbitmq.test2.queue}")
-	private String queue2;
-
-	@Value("${rabbitmq.exchange}")
-	private String exchange;
-
-	@Value("${rabbitmq.test.routingkey}")
-	private String routingkey;
-
-	@Value("${rabbitmq.test2.routingkey}")
-	private String routingkey2;
-
 	// can create multiple queue
-	
-
 	@Bean
 	public Queue test2Queue() {
-		return new Queue(queue2);
+		return new Queue(systemConfig.getQueue2());
 	}
 
 	@Bean
 	public DirectExchange directExchange() {
-		return new DirectExchange(exchange);
+		return new DirectExchange(systemConfig.getExchange());
 	}
 
 	// Binding queue with exchange using routing key
 	@Bean
 	public Binding binding() {
-		return BindingBuilder.bind(testQueue()).to(directExchange()).with(routingkey);
+		return BindingBuilder.bind(testQueue()).to(directExchange()).with(systemConfig.getRoutingkey());
 	}
 
 	@Bean
 	public Binding test2binding() {
-		return BindingBuilder.bind(test2Queue()).to(directExchange()).with(routingkey2);
+		return BindingBuilder.bind(test2Queue()).to(directExchange()).with(systemConfig.getRoutingkey2());
 	}
 
 	@Bean
@@ -100,47 +86,30 @@ public class RabbitMqConfig {
 	// Connection Factory
 	// Rabbit template
 
-//	=====================================================================
-//	Topic Exchange
-	
-	@Value("${rabbitmq.json.exchange}")
-	private String jsonExchange;
-	
-	@Value("${rabbitmq.json.queue}")
-	private String jsonQueue;
-	
-	@Value("${rabbitmq.json.email-queue}")
-	private String jsonEmailQueue;
-	
-	@Value("${rabbitmq.json.routingkey}")
-	private String jsonRoutingkey;
-	
-	@Value("${rabbitmq.json.email-routingkey}")
-	private String jsonEmailRoutingkey;
+//	====================== Topic Exchange =========================================
 
 	@Bean
 	public Queue jsonQueue() {
-		return new Queue(jsonQueue);
+		return new Queue(systemConfig.getJsonQueue());
 	}
 	
 	@Bean
 	public Queue jsonEmailQueue() {
-		return new Queue(jsonEmailQueue);
+		return new Queue(systemConfig.getJsonEmailQueue());
 	}
 	
 	@Bean
 	public TopicExchange topicExchange() {
-		return new TopicExchange(jsonExchange);
+		return new TopicExchange(systemConfig.getJsonExchange());
 	}
 	
 	@Bean
 	public Binding jsonBinding() {
-		return BindingBuilder.bind(jsonQueue()).to(topicExchange()).with(jsonRoutingkey);
+		return BindingBuilder.bind(jsonQueue()).to(topicExchange()).with(systemConfig.getJsonRoutingkey());
 	}
 
 	@Bean
 	public Binding jsonEmailBinding() {
-		return BindingBuilder.bind(jsonEmailQueue()).to(topicExchange()).with(jsonEmailRoutingkey);
+		return BindingBuilder.bind(jsonEmailQueue()).to(topicExchange()).with(systemConfig.getJsonEmailRoutingkey());
 	}
-	
 }

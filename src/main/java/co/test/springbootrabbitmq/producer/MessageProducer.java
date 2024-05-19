@@ -1,10 +1,10 @@
 package co.test.springbootrabbitmq.producer;
 
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Service;
 
+import co.test.springbootrabbitmq.config.SystemConfig;
 import co.test.springbootrabbitmq.dto.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,48 +13,42 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class MessageProducer {
 	
-	@Value("${rabbitmq.exchange}")
-	private String exchange;
+	private final SystemConfig systemConfig;
+	private final AmqpTemplate amqpTemplate;
 
-	@Value("${rabbitmq.test.routingkey}")
-	private String routingkey;
-	
-	@Value("${rabbitmq.test2.routingkey}")
-	private String routingkey2;
-	
-	@Value("${rabbitmq.json.exchange}")
-	private String jsonExchange;
-	
-	@Value("${rabbitmq.json.routingkey}")
-	private String jsonRoutingkey;
-	
-	@Value("${rabbitmq.json.email-routingkey}")
-	private String jsonEmailRoutingkey;
-
-	private final RabbitTemplate rabbitTemplate;
-	
-	@Scheduled(fixedDelay = 15000) //after each 15 sec
-	public void messageProducer() {
-		String message = "Hellooo....";
-//		log.info("Scheduled Message sending -> {}", message);
-//		rabbitTemplate.convertAndSend(exchange, routingkey, message);//First queue
-//		rabbitTemplate.convertAndSend(exchange, routingkey2, message);//Second queue
-	}
-	
 	public void messageSending(String message) {
-		log.info("Message sending -> {}", message);
-		rabbitTemplate.convertAndSend(exchange, routingkey, message);//First queue
-		rabbitTemplate.convertAndSend(exchange, routingkey2, message);//Second queue
-	}
-	
-	public void jsonObjectSending(User user) {
-		log.info("Message sending -> {}", user.toString());
-		// For Json queue
-//		rabbitTemplate.convertAndSend(jsonExchange, jsonRoutingkey, user);
-		
-		// For Json as well as email queue
-		rabbitTemplate.convertAndSend(jsonExchange, jsonEmailRoutingkey, user);
+		try {
+			log.info("Message sending for text exchange -> {}", message);
 
-		log.debug("Message sent -> {}", user.toString());
+	        amqpTemplate.convertAndSend(systemConfig.getExchange(), 
+	        							systemConfig.getRoutingkey(), 
+	        							message);
+		} catch (AmqpException e) {
+			log.error("Error occurred while sending message: {}", e.getMessage());
+			// You can add additional error handling logic here,
+			// such as retrying the operation or notifying the appropriate parties
+		}
+	}
+
+	public void jsonObjectSending(User user) {
+		try {
+			log.info("Message sending for json exchange -> {}", user.toString());
+
+			// For Json queue
+	        amqpTemplate.convertAndSend(systemConfig.getJsonExchange(), 
+	        							systemConfig.getJsonRoutingkey(), 
+	        							user); 
+	       
+	        // For Json queue as well as email queue
+	        amqpTemplate.convertAndSend(systemConfig.getJsonExchange(), 
+	        							systemConfig.getJsonEmailRoutingkey(), 
+	        							user);
+
+			log.info("Message sent -> {}", user.toString());
+		} catch (AmqpException e) {
+			log.error("Error occurred while sending message: {}", e.getMessage(), e);
+			// You can add additional error handling logic here,
+			// such as retrying the operation or notifying the appropriate parties
+		}
 	}
 }
