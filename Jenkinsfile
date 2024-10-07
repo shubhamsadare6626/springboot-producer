@@ -14,10 +14,10 @@ pipeline {
                     url: 'https://github.com/shubhamsadare6626/springboot-producer.git'
             }
         }
-        stage('Maven build') {
+       stage('Maven build') {
             steps {
-                // Run Maven build on a Unix agent.
-                mvn clean compile install -DskipTests
+                // Use Maven to build the project
+                sh 'mvn clean compile install -DskipTests'
             }
         }
         stage('Docker build') {
