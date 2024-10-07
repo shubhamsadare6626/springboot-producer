@@ -2,7 +2,7 @@ version: '3'
 services:
   springboot-rabbitmq-producer:
     container_name: springboot-rabbitmq-producer
-    image: shubham6626/springboot-rabbitmq-producer #hub.docker.com or build image(Dockerfile)
+    image: personal/springboot-producer
     ports:
      - 8088:8088
     volumes:
