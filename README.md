@@ -11,6 +11,9 @@ Project contains two submodules:
 - Java Development Kit (JDK) 8 or later
 - Docker
 
+## Integrations
+- Docker, Jenkins and Rabbitmq.
+
 # Run the following command to build the application:
 - mvn clean install -DskipTests
 
