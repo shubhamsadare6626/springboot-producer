@@ -27,7 +27,7 @@ rabbitmq:
     email-routingkey: json.email.#
 logging:
   level:
-    com.sample: DEBUG
+    co.test: DEBUG
     org.hibernate.stat: DEBUG
     org.hibernate.sql: DEBUG
   pattern:
