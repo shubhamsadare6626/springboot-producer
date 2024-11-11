@@ -25,4 +25,10 @@ rabbitmq:
     routingkey: json.#
     email-queue: email
     email-routingkey: json.email.#
-    
+logging:
+  level:
+    com.sample: DEBUG
+    org.hibernate.stat: DEBUG
+    org.hibernate.sql: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} [%clr(%5p)][%clr(%15.15t){yellow}] --- %clr(%c{1}){blue} : %clr(%m){faint}%n"
